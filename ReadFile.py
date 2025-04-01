@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 # Directory containing the sleep cassette files
-filePath = "/Users/yongjindu/Desktop/EEG/sleep-edf-database-expanded-1.0.0/sleep-cassette/"
+filePath = #filepath
 
 def readEEGFile(file_name):
     try:
