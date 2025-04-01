@@ -29,23 +29,6 @@ https://physionet.org/content/sleep-edfx/1.0.0/
 
 After downloading, you'll need to update the file paths in the code to point to your local dataset.
 
-## Usage
-
-For single case analysis:
-```
-python Main.py
-```
-
-For multiple case analysis:
-```
-python multi_case_knn_script.py
-```
-
-For ensemble KNN:
-```
-python ensemble_knn.py
-```
-
 ## TODO
 
 - Implement additional classification algorithms
