@@ -72,7 +72,7 @@ def apply_knn_with_progress(X, y, case_ids, test_size, k):
     return knn, accuracy
 
 if __name__ == "__main__":
-    directory_path = "/Users/yongjindu/Desktop/EEG/sleep-edf-database-expanded-1.0.0/sleep-cassette/"
+    directory_path = #filepath
 
     start_time = time.time()
     X_all, y_all, case_ids_all = collect_all_data(directory_path)
