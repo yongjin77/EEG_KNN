@@ -65,7 +65,7 @@ def parallel_ensemble_knn(X_train: np.ndarray, y_train: np.ndarray,
 
 if __name__ == "__main__":
     # Configuration
-    DATA_DIR = "/Users/yongjindu/Desktop/EEG/sleep-edf-database-expanded-1.0.0/sleep-cassette/"
+    DATA_DIR = #filepath
     TRAIN_RATIO = 0.8
     K = 5
     N_ESTIMATORS = 5
