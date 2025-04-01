@@ -7,18 +7,7 @@ import time
 from ProgressKNN import ProgressKNN
 import pickle
 
-
 def collect_all_data(directory_path, cache_file='processed_data_cache.pkl'):
-    """
-    Collect and prepare data from all case files in the directory.
-
-    Args:
-        directory_path: Path to the directory containing EEG files
-        cache_file: Path to the cache file
-
-    Returns:
-        Tuple[np.ndarray, np.ndarray, List[str]]: Features, labels, and case IDs
-    """
     if os.path.exists(cache_file):
         print("Loading cached data...")
         with open(cache_file, 'rb') as f:
@@ -72,89 +61,33 @@ def collect_all_data(directory_path, cache_file='processed_data_cache.pkl'):
 
     return X_combined, y_combined, all_case_ids
 
-
 def apply_knn_with_progress(X, y, case_ids, test_size, k):
-    """
-    Apply KNN with progress reporting and evaluate performance.
-
-    Args:
-        X: Features matrix
-        y: Labels array
-        case_ids: List of case IDs
-        test_size: Proportion of data to use for testing
-        k: Number of neighbors
-
-    Returns:
-        Tuple[ProgressKNN, float]: Trained model and accuracy
-    """
-    print(f"\nApplying KNN (k={k}) with test_size={test_size}")
-
-    # Split data
     X_train, X_test, y_train, y_test, case_ids_train, case_ids_test = train_test_split(
         X, y, case_ids, test_size=test_size, random_state=77
     )
-
-    print(f"Training set: {len(X_train)} samples")
-    print(f"Test set: {len(X_test)} samples")
-
-    # Train model
-    start_time = time.time()
     knn = ProgressKNN(k)
     knn.fit(X_train, y_train, case_ids_train)
-
-    # Generate predictions
     y_pred = knn.predict(X_test, case_ids_test)
-
-    # Evaluate performance
     accuracy = accuracy_score(y_test, y_pred)
-
-    end_time = time.time()
-    training_time = end_time - start_time
-
-    print(f"KNN training and prediction completed in {training_time:.2f} seconds")
-    print(f"Accuracy: {accuracy:.4f}")
-
     return knn, accuracy
 
-
 if __name__ == "__main__":
-    # Configuration
     directory_path = "/Users/yongjindu/Desktop/EEG/sleep-edf-database-expanded-1.0.0/sleep-cassette/"
-    test_size = 0.2
+
+    start_time = time.time()
+    X_all, y_all, case_ids_all = collect_all_data(directory_path)
+
+    print(f"\nTotal number of samples collected: {len(X_all)}")
+
+
+    print("\nApplying KNN to the entire dataset...")
     k = 3
+    test_size = 0.2
+    knn, accuracy = apply_knn_with_progress(X_all, y_all, case_ids_all, test_size, k)
 
-    try:
-        # Measure execution time
-        start_time = time.time()
+    end_time = time.time()
+    total_time = end_time - start_time
 
-        # Load data
-        print("Starting data collection process")
-        X_all, y_all, case_ids_all = collect_all_data(directory_path)
-
-        if len(X_all) == 0:
-            print("No data available. Exiting.")
-            exit()
-
-        print(f"\nTotal number of samples collected: {len(X_all)}")
-        print(f"Feature dimension: {X_all.shape[1]}")
-        print(f"Unique labels: {np.unique(y_all)}")
-        print(f"Unique cases: {len(set(case_ids_all))}")
-
-        # Apply KNN
-        print("\nApplying KNN to the entire dataset...")
-        knn, accuracy = apply_knn_with_progress(X_all, y_all, case_ids_all, test_size, k)
-
-        # Calculate execution time
-        end_time = time.time()
-        total_time = end_time - start_time
-
-        # Output results
-        print(f"\nResults Summary:")
-        print(f"Accuracy: {accuracy:.4f}")
-        print(f"Total processing time: {total_time:.2f} seconds")
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        import traceback
-
-        print(traceback.format_exc())
+    print(f"\n Results:")
+    print(f"Accuracy: {accuracy:.2f}")
+    print(f"Total processing time: {total_time:.2f} seconds")
